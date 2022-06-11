@@ -1,0 +1,37 @@
+<main id="searchPage" data-search-term="{{fallback search_term "undefined"}}" class="three-col-center-focused-grid">
+  <section id="spResults" class="three-col-center">
+    {{#each articles}}
+      <a data-article-id="{{this.article_id}}" href="{{this.relative_url}}" aria-label="{{this.title}} article card">
+        <div class="spResult card scaleSmall">
+          <h3 class="spCardTitle">{{this.title}}</h3>
+          <p class="spCardDescription">{{this.description}}</p>
+          {{#if article.author}}
+            <div class="ahAuthorship authorship">
+              <p class="ahAuthorshipText authorshipText">
+                {{#if article.author.profile_image}}
+                  <img class="spAuthorshipAvatar authorshipAvatar" src="{{article.author.profile_image}}" alt="{{article.author.name}}">
+                {{/if}}
+                <span class="spAuthorshipTimestamp authorshipTimestamp" aria-label="Article last updated {{article.updated_at_relative}}">
+                  {{i18n "updated" "Updated"}} {{article.updated_at_relative}}
+                </span>
+                {{#if article.author.name}}
+                  <span class="spAuthorshipAuthor authorshipAuthor">
+                    {{i18n "by" "by"}} {{article.author.name}}
+                  </span>
+                {{/if}}
+              </p>
+            </div>
+          {{/if}}
+        </div>
+      </a>
+    {{/each}}
+    {{#unless articles}}
+      <div class="spNoResults" aria-label="No article results found for '{{original_search_term}}'">
+        <p class="spText">
+          {{i18n "no_articles_found" "We couldn't find any articles matching"}}
+          <b>{{original_search_term}}</b>
+        </p>
+      </div>
+    {{/unless}}
+  </section>
+</main>

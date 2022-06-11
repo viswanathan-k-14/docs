@@ -1,0 +1,133 @@
+{{#*inline "articleItem"}}
+  <a href="{{article.relative_url}}">
+    <div class="aArticle card" aria-label="{{~this.title}} article card">
+      <h4 class="aCardTitle cardTitle">
+        {{#if article.is_featured}}<svg class="aCardFeaturedIcon" alt="{{i18n "featured" "Featured"}}" height="14" viewBox="0 0 11.381 16.001" width="12" xmlns="http://www.w3.org/2000/svg"><path d="m162-103v-14.1a1.9 1.9 0 0 1 1.9-1.9h7.587a1.9 1.9 0 0 1 1.9 1.9v14.1l-5.818-3.585zm5.667-7.583 2.132 1.175-.435-2.463 1.608-1.669-2.084-.38-1.221-2.181-1.218 2.181-2.2.38 1.677 1.669-.578 2.463 2.313-1.175z" transform="translate(-161.998 119)"></path></svg> &#8203;{{/if}}
+        {{~article.title}}
+      </h4>
+      <p class="aCardDescription">{{article.description}}</p>
+      <div class="ahAuthorship authorship" aria-label="{{article.author.name}}">
+        <div class="ahAuthorshipWrapper">
+          <div class="ahAuthor">
+            {{#if article.author.profile_image}}
+              <img class="ahAuthorshipAvatar authorshipAvatar" src="{{article.author.profile_image}}" {{#if article.author.name}}alt="{{article.author.name}}"{{/if}}>
+            {{/if}}
+          </div>
+          <div class="ahAuthorshipMeta">
+            <span class="ahAuthorshipTimestamp authorshipTimestamp">
+              {{i18n "updated" "Updated"}} {{article.updated_at_relative}}
+            </span>
+            {{#if article.author.name}}
+              <span class="ahAuthorshipAuthor authorshipAuthor">
+                {{i18n "by" "by"}} {{article.author.name}}
+              </span>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </a>
+{{/inline}}
+
+<main id="categoryContent" class="three-col-center-focused-grid">
+  <section id="breadcrumbs">
+		<!-- Breadcrumbs -->
+		<div class="bcList">
+			<ol vocab="https://schema.org/" typeof="BreadcrumbList">
+				<li property="itemListElement" typeof="ListItem">
+          <a property="item" typeof="WebPage" href="{{fallback meta.home_path "/"}}" aria-label="Breadcrumb link to {{i18n "all_categories" "All Categories"}}">
+            <span property="name">{{i18n "all_categories" "All Categories"}}</span>
+          </a>
+          <meta property="position" content="1" />
+          <svg class="bcIcon" height="8" viewBox="0 0 6 8" width="6" xmlns="http://www.w3.org/2000/svg">
+            <path d="m-19.594 240 5 3.575-5 3.425" fill="none" stroke="#808080" stroke-linecap="round" stroke-linejoin="round" transform="translate(20.094 -239.5)"/>
+          </svg>
+          {{> categoryBreadcrumbs version="4"}}
+				</li>
+        <li>
+          <span>{{article.title}}</span>
+        </li>
+			</ol>
+		</div>
+	</section>
+
+  <!-- Side navigation -->
+	<div id="sidenav" class="categoriesSidenav">
+		<div class="snmenu three-col-left stickOnScroll">
+			{{> sidebar}}
+		</div>
+	</div>
+
+  <h2 class="cTitle">{{category.title}}</h2>
+
+	<section id="content" class="three-col-center">
+
+    {{#if (filterCategoriesByParentId meta.sidebar_categories category.category_id)}}
+      <section id="categories">
+        {{#each (filterCategoriesByParentId meta.sidebar_categories category.category_id)}}
+          <a href="{{this.relative_url}}">
+            <div class="cCategory subcategory card stack">
+        			<div class="cCardIcon">
+                {{#if (hasPrefix this.icon "fa-")}}
+                  <i class="fa fa-3x category-icon {{this.icon}}"></i>
+                {{else if (hasPrefix this.icon "http")}}
+                  <img class="cCardIconImage" src="{{this.icon}}">
+                {{/if}}
+        			</div>
+        			<h3 class="cCardTitle cardTitle">{{this.title}}</h3>
+        			<p class="cCardDescription">{{this.description}}</p>
+              {{#if (gt this.meta.num_authors 0)}}
+                <div class="cCardAuthorship">
+                  <div class="cCardAuthorshipWrapper">
+  									<div class="cCardAuthors">
+  										{{#each this.authors}}
+  	                    {{#if (lt @index 4)}}
+  	                      {{#if this.profile_image}}
+  	                        <img class="cCardAuthorshipAvatar" alt="author avatar" src="{{this.profile_image}}" {{#if this.name}}alt="{{this.name}}"{{/if}}>
+  	                      {{/if}}
+  	                    {{/if}}
+  	                  {{/each}}
+  									</div>
+  									<div class="cCardAuthorshipMeta">
+  	                  <span class="cCardAuthorshipArticleCount">
+  	                    {{this.meta.num_articles}}
+  	                    {{#if (eq this.meta.num_articles 1)}}
+  	                      {{i18n "article" "article"}}
+  	                    {{else}}
+  	                      {{i18n "articles" "articles"}}
+  	                    {{/if}}
+  										</span>
+                      <span class="cCardAuthorshipAuthorCount">
+                        {{i18n "by" "by"}}
+                        {{this.meta.num_authors}}
+                        {{#if (eq this.meta.num_authors 1)}}
+                          {{i18n "author" "author"}}
+                        {{else}}
+                          {{i18n "authors" "authors"}}
+                        {{/if}}
+                      </span>
+  									</div>
+                  </div>
+                </div>
+              {{/if}}
+        		</div>
+          </a>
+        {{/each}}
+      </section>
+    {{/if}}
+
+    <section id="articles" class="three-col-center">
+      {{#each category.articles}}
+        {{#if this.is_featured}}
+          {{> articleItem article=this}}
+        {{/if}}
+      {{/each}}
+      {{#each category.articles}}
+        {{#unless this.is_featured}}
+          {{> articleItem article=this}}
+        {{/unless}}
+      {{/each}}
+    </section>
+
+  </section>
+</main>

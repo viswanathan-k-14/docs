@@ -1,0 +1,206 @@
+{{#*inline "prevNext"}}
+	{{#each category.articles}}
+		{{#if (eq this.article_id @root.article.article_id)}}
+			<section id="prevNext">
+				{{#unless @first}}
+					{{#with (deepLookup @root.category.articles (subtract @index 1))}}
+						<a class="pnPrevLink" href="{{relative_url}}" aria-label="Go to previous article {{this.title}}">
+							<div class="pnPrev">
+								<svg class="backToTopIcon" height="10" viewBox="0 0 23 13" width="20" xmlns="http://www.w3.org/2000/svg"><path d="m0 0 10 10.215-10 9.785" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" transform="matrix(0 -1 1 0 1.5 11.5)"></path></svg>
+								<h4 class="pnPrevTitle">{{this.title}}</h4>
+							</div>
+						</a>
+					{{/with}}
+				{{/unless}}
+				{{#unless @last}}
+					{{#with (deepLookup @root.category.articles (add @index 1))}}
+						<a class="pnNextLink" href="{{relative_url}}" aria-label="Go to next article {{this.title}}">
+							<div class="pnNext">
+								<h4 class="pnNextTitle">{{this.title}}</h4>
+								<svg class="backToTopIcon" height="10" viewBox="0 0 23 13" width="20" xmlns="http://www.w3.org/2000/svg"><path d="m0 0 10 10.215-10 9.785" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" transform="matrix(0 -1 1 0 1.5 11.5)"></path></svg>
+							</div>
+						</a>
+					{{/with}}
+				{{/unless}}
+			</section>
+		{{/if}}
+	{{/each}}
+{{/inline}}
+
+<main id="articleContent" class="three-col-small-center-focused-grid">
+	<!-- Side navigation -->
+	<section id="sidenav" aria-label="Side navigation">
+		<div class="snmenu three-col-left stickOnScroll">
+			{{> sidebar}}
+		</div>
+	</section>
+
+	<!-- Table of contents --->
+	{{#if article.show_toc}}
+		<section id="tableOfContents" class="three-col-right stickOnScroll" aria-label="{{i18n "table_of_contents" "Table of Contents"}}">
+			<h4 class="tocTitle">{{i18n "table_of_contents" "Table of Contents"}}</h4>
+			{{{article.toc}}}
+		</section>
+	{{/if}}
+
+	<section id="breadcrumbs">
+		<!-- Breadcrumbs -->
+		<div class="bcList">
+			<ol vocab="https://schema.org/" typeof="BreadcrumbList">
+				<li property="itemListElement" typeof="ListItem">
+					<a property="item" typeof="WebPage" class="bcItem" href="{{fallback meta.home_path "/"}}">
+						<span property="name">{{i18n "all_categories" "All Categories"}}</span>
+					</a>
+					<meta property="position" content="1" />
+					<svg class="bcIcon" height="8" viewBox="0 0 6 8" width="6" xmlns="http://www.w3.org/2000/svg">
+						<path d="m-19.594 240 5 3.575-5 3.425" fill="none" stroke="#808080" stroke-linecap="round" stroke-linejoin="round" transform="translate(20.094 -239.5)"/>
+					</svg>
+					{{> categoryBreadcrumbs version="4" linkify=true}}
+					<svg class="bcIcon" height="8" viewBox="0 0 6 8" width="6" xmlns="http://www.w3.org/2000/svg">
+						<path d="m-19.594 240 5 3.575-5 3.425" fill="none" stroke="#808080" stroke-linecap="round" stroke-linejoin="round" transform="translate(20.094 -239.5)"/>
+					</svg>
+					{{#if category.icon}}
+						<i class="fa breadcrumb-icon fa-file-text{{#if (hasSuffix category.icon "-o")}}-o{{/if}}"></i>
+					{{/if}}
+				</li>
+        <li>
+          <span>{{article.title}}</span>
+        </li>
+			</ol>
+		</div>
+	</section>
+
+	<section id="articleCard" class="three-col-center{{#if article.show_toc}} responsive-toc{{/if}}">
+		<section id="articleHeader">
+			<header class="ahHeader">
+				<!-- Article title -->
+				<h1 class="ahTitle">{{article.title}}</h1>
+			</header>
+			{{#if article.author}}
+				<section id="ahAuthorship" {{#isPermissioned article}}class="permissioned"{{/isPermissioned}}>
+					<p class="ahMeta">
+	          {{#if article.author.profile_image}}
+	            <img class="ahAvatar" src="{{article.author.profile_image}}" {{#if article.author.name}}alt="{{article.author.name}}"{{/if}} />
+	          {{/if}}
+	          {{#if article.author.name}}
+	  					<span class="ahTime">
+	              {{i18n "updated" "Updated"}}
+	              <time datetime="2019-01-23T12:47">{{article.updated_at_relative}}</time>
+	            </span>
+	  					<span class="ahAuthor">{{i18n "by" "by"}} <span>{{article.author.name}}</span></span>
+							{{#isPermissioned article}}
+								<span class="ahPermissioned" alt="This article has permissions" title="This article has permissions">
+									<svg class="ahPermissionedIcon" height="21.918" viewBox="0 0 22 21.918" width="22" xmlns="http://www.w3.org/2000/svg">
+										<g stroke="#000">
+											<path d="m4.285 12.14.415-5.665h.271a.787.787 0 0 0 .733-.91l-.47-4.147a1.531 1.531 0 0 0 -1.465-1.418h-1.824a1.531 1.531 0 0 0 -1.466 1.418l-.473 4.147a.787.787 0 0 0 .733.91h.271l.418 5.665z" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" transform="translate(8.057 4.785)"/>
+											<path d="m2.857 1.428a1.428 1.428 0 1 1 -1.429-1.428 1.428 1.428 0 0 1 1.429 1.428z" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" transform="translate(9.485 .5)"/>
+											<g class="circle1" fill="none">
+												<ellipse cx="11" cy="16.418" rx="11" ry="3.5" stroke="none"/>
+												<ellipse cx="11" cy="16.418" fill="none" rx="10.5" ry="3"/>
+											</g>
+										</g>
+									</svg>
+								</span>
+							{{/isPermissioned}}
+	          {{/if}}
+	        </p>
+				</section>
+			{{/if}}
+		</section>
+
+		<section id="articleBody">
+			<!-- Article body --->
+			<!-- Table of contents ID is only applied if enabled by user -->
+			<article class="articleHTML" {{#if article.show_toc}}id="articleWithToc"{{/if}}>
+				{{{article.body}}}
+			</article>
+		</section>
+
+		<section id="feedback" data-thanks="{{i18n "got_it" "Got it!"}}">
+			<h3 class="fbTitle">{{i18n "how_did_we_do" "How did we do?"}}</h3>
+			<div class="fbButtons">
+				<button class="fbPositive feedback-positive" aria-label="Positive feedback button">
+					<svg class="fbPositiveIcon" height="50" viewBox="0 0 50 50" width="50" xmlns="http://www.w3.org/2000/svg">
+						<g class="fbHighlightStroke" fill="none" stroke="#191919" stroke-width="2">
+							<circle cx="25" cy="25" r="25" stroke="none"/>
+							<circle cx="25" cy="25" fill="none" r="24"/>
+						</g>
+						<g class="fbHighlightFill" fill="#191919">
+							<circle class="fbHighlightFill" cx="17" cy="18" r="4"/>
+							<circle class="fbHighlightFill" cx="33" cy="18" r="4"/>
+							<path class="fbHighlightStroke" d="m34.174 2.014s-.7 13.392-15.236 13.19c-14.221-.2-15.1-13.19-15.1-13.19a93.374 93.374 0 0 0 15.1 1.416 96.105 96.105 0 0 0 15.236-1.416z" transform="translate(6 27)"/>
+						</g>
+						<path class="fbPositiveTeeth" d="m31.815 2.014s-.648 4.786-14.051 4.713c-13.115-.071-13.927-4.713-13.927-4.713a76.9 76.9 0 0 0 13.928 1.47 79.141 79.141 0 0 0 14.05-1.47z" fill="#f9f9f9" transform="translate(7.18 28.16)"/>
+					</svg>
+				</button>
+				<button class="fbNeutral feedback-neutral" aria-label="Neutral feedback button">
+					<svg class="fbNeutralIcon" height="50" viewBox="0 0 50 50" width="50" xmlns="http://www.w3.org/2000/svg">
+						<g class="fbHighlightStroke" fill="none" stroke="#191919" stroke-width="2"><circle cx="25" cy="25" r="25" stroke="none"/>
+							<circle cx="25" cy="25" fill="none" r="24"/>
+						</g>
+						<path class="fbHighlightStroke" d="m101 244h23.954" fill="none" stroke="#191919" stroke-linecap="round" stroke-width="2" transform="translate(-88 -211)"/>
+						<g class="fbHighlightFill" fill="#191919">
+							<circle class="fbHighlightFill" cx="17" cy="19" r="4"/>
+							<circle class="fbHighlightFill" cx="33" cy="19" r="4"/>
+						</g>
+					</svg>
+				</button>
+				<button class="fbNegative feedback-negative" aria-label="Negative feedback button">
+					<svg class="fbNegativeIcon" height="50" viewBox="0 0 50 50" width="50" xmlns="http://www.w3.org/2000/svg">
+						<g class="fbHighlightStroke" fill="none" stroke="#191919" stroke-width="2">
+							<circle cx="25" cy="25" r="25" stroke="none"/>
+							<circle cx="25" cy="25" fill="none" r="24"/>
+						</g>
+						<g class="fbHighlightFill" fill="#191919" stroke-width="2">
+							<circle class="fbHighlightFill" cx="33" cy="19" r="4"/>
+							<circle class="fbHighlightFill" cx="17" cy="19" r="4"/>
+						</g>
+						<path class="fbHighlightStroke" d="m101 246.37s3.1-5.4 11.974-5.22 11.98 5.22 11.98 5.22" fill="none" stroke="#191919" stroke-linecap="round" stroke-width="2" transform="translate(-88 -211)"/>
+					</svg>
+				</button>
+			</div>
+		</section>
+
+		{{> prevNext}}
+
+    {{#if meta.related_articles}}
+  		<section id="relatedArticles">
+  			<h3 class="raTitle">{{i18n "related_articles" "Related Articles"}}</h3>
+  			<div class="raList">
+          {{#each meta.related_articles}}
+            <a class="raLink" href="{{this.relative_url}}">
+              <div class="raHit scaleSmall">
+                <h4 class="raCardTitle">{{this.title}}</h4>
+              </div>
+            </a>
+          {{/each}}
+        </div>
+  		</section>
+    {{/if}}
+    {{#featureGate "integrations"}}
+      {{#if config.disqus_shortname}}
+        <hr/>
+        <!-- Disqus -->
+        <div id="disqus_thread"></div>
+        <script>
+          var disqus_config = function () {
+              this.page.url = "{{meta.canonical}}";
+              this.page.identifier = "article-{{article.article_id}}";
+          };
+          (function() {
+              var d = document, s = d.createElement('script');
+
+              s.src = 'https://{{config.disqus_shortname}}.disqus.com/embed.js';
+
+              s.setAttribute('data-timestamp', +new Date());
+              (d.head || d.body).appendChild(s);
+          })();
+        </script>
+        <noscript>
+          |Please enable JavaScript to view the &#8203;
+          a(href="https://disqus.com/?ref_noscript", rel="nofollow") comments powered by Disqus.
+        </noscript>
+      {{/if}}
+    {{/featureGate}}
+	</section>
+</main>

@@ -1,0 +1,283 @@
+<section id="homeBanner">
+
+  <!-- Main navigation bar -->
+  <header id="homeNav">
+    <nav role="navigation">
+      <!-- Logo and brand -->
+      <a class="hnBranding navLeft" href="{{fallback meta.home_path "/"}}">
+        {{#if config.logo}}
+          <img class="hnLogo" aria-label="{{config.brand logo}} Logo" src="{{config.logo}}" alt="{{config.brand}} Logo" />
+        {{/if}}
+        {{#if config.brand}}
+          <span class="hnBrand" aria-label="{{config.brand}}">{{config.brand}}</span>
+        {{/if}}
+      </a>
+
+      {{#unless (page "categories")}}
+        <!-- Search bar -->
+        <section id="search-container"{{#unless (page "home")}} class="smallSearchContainer" aria-label="Search section" {{/unless}}>
+          <div class="smallInstantSearch" id="instant-search">
+            <form action="{{rootPath meta.home_path}}/search" method="GET">
+              <label><input id="hd-query" name="query" placeholder="{{i18n "help_me_with" "Help Me With..."}}" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="{{i18n "help_me_with" "Help Me With..."}} search bar"></label>
+            </form>
+          </div>
+
+          <!-- Search results -->
+          <section id="searchresults" {{#unless (page "home")}} class="smallSearchHits" aria-label="Search results"{{/unless}}>
+            <div class="srHits" id="hits" aria-label="Search hit"></div>
+          </section>
+
+        </section>
+      {{/unless}}
+
+      <!-- Navigation links -->
+      <div class="hnItems navRightItems">
+        <ul class="hnList">
+          {{#if config.statuspage}}
+            <li class="hnItem" href="#" target="_blank" aria-label="StatusPage navigation item">
+              <a class="hnStatus statuspage">
+                <span class="color-dot"></span>
+                <span class="color-description" aria-label="StatusPage indication text"></span>
+              </a>
+            </li>
+          {{/if}}
+          {{#if config.hyperping}}
+            <li class="hnItem" href="#" target="_blank" aria-label="Hyperping navigation item">
+              <a class="hnStatus statuspage">
+                <span class="color-dot"></span>
+                <span class="color-description" aria-label="Hyperping indication text"></span>
+              </a>
+            </li>
+          {{/if}}
+          {{#if config.nav_items}}
+            {{#each config.nav_items}}
+              <li class="hnItem" href="#">
+                <a class="hnLink" rel="noreferrer" href="{{this.href}}" target="{{fallback this.target "_blank"}}" aria-label="{{this.title}} navigation item">
+                  {{this.title}}
+                </a>
+              </li>
+              
+            {{/each}}
+          {{/if}}
+          <li class="hnItem contactButton" href="#" aria-label="{{i18n "contact" "Contact"}}">
+            {{> contactLink}}
+          </li> <!-- Contact button -->
+          {{#if meta.languages}}
+            <!-- Language switcher -->
+            <li data-popup-trigger="language" class="hnItem languageSwitcher" href="#" aria-label="Language switcher">
+              <a class="hnLink hnLang" href="#">
+                <svg class="hnLangFlag" height="15" viewBox="0 0 20 20" width="15" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <clipPath id="hnLangClip">
+                    <path d="m0 0h24v24h-24z"/>
+                  </clipPath>
+                  <g clip-path="url(#a)">
+                    <path d="m0 0h5a1 1 0 0 1 1 1v7a1 1 0 0 1 -1 1h-5a0 0 0 0 1 0 0v-9a0 0 0 0 1 0 0z" transform="translate(14 3)"/>
+                    <path d="m1 0h8a0 0 0 0 1 0 0v10a0 0 0 0 1 0 0h-8a1 1 0 0 1 -1-1v-8a1 1 0 0 1 1-1z" transform="translate(4 4)"/>
+                    <path d="m0 0h1v2h-1z" transform="translate(5 1)"/>
+                    <path d="m0 0h1v8h-1z" transform="translate(5 15)"/>
+                  </g>
+                </svg>
+                <span class="hnLangCode">{{meta.language_code}}</span>
+              </a>
+            </li>
+          {{/if}}
+        </ul>
+      </div>
+
+      <div data-popup-body="language" class="languageSwitcherPopup popup" style="z-index: 5;">
+        <ul class="languageList">
+          {{#each meta.languages}}
+            {{#page "article"}}
+              {{#each meta.sidebar_categories}}
+                {{#each this.articles}}
+                  {{#if (eq this.article_id @root.article.article_id)}}
+                    {{#if (lookup this.live_language_urls ../../code)}}
+                      <li class="langItem" href="#">
+                        <a class="langLink" href="{{lookup this.live_language_urls ../../code}}" aria-label="Switch to {{../../name}}">
+                          {{../../name}}
+                        </a>
+                      </li>
+                    {{else}}
+                      <li class="langItem" href="#">
+                        <a class="langLink" href="{{rootPath meta.home_path}}/l/{{../../code}}" aria-label="Switch to {{../../name}}">
+                          {{../../name}}
+                        </a>
+                      </li>
+                    {{/if}}
+                  {{/if}}
+                {{/each}}
+              {{/each}}
+            {{else}}
+              {{#page "category"}}
+                {{#if (lookup category.live_language_urls this.code)}}
+                  <li class="langItem" href="#">
+                    <a class="langLink" href="{{lookup category.live_language_urls this.code}}" aria-label="Switch to {{this.name}}">
+                      {{this.name}}
+                    </a>
+                  </li>
+                {{else}}
+                  <li class="langItem" href="#">
+                    <a class="langLink" href="{{rootPath meta.home_path}}/l/{{this.code}}" aria-label="Switch to {{this.name}}">
+                      {{this.name}}
+                    </a>
+                  </li>
+                {{/if}}
+              {{else}}
+                <li class="langItem" href="#">
+                  <a class="langLink" href="{{rootPath meta.home_path}}/l/{{this.code}}" aria-label="Switch to {{this.name}}">
+                    {{this.name}}
+                  </a>
+                </li>
+              {{/page}}
+            {{/page}}
+          {{/each}}
+        </ul>
+      </div>
+
+      <!-- Mobile navigation -->
+      <a data-popup-trigger="mobile-nav" href="#" class="hnMobileNavButton" aria-label="Mobile navigation">
+        <svg height="14" viewBox="0 0 20 14" width="20" xmlns="http://www.w3.org/2000/svg">
+          <g class="hnMobileIcon" fill="none" stroke="none" stroke-width="2">
+            <path class="hnMobileIconTopBar" d="m0 1h20"/>
+            <path class="hnMobileIconBottomBar" d="m0 13h20"/>
+          </g>
+        </svg>
+      </a>
+      <div data-popup-body="mobile-nav" class="hnMobileItems mobileMenuPopup popup" aria-label="Mobile navigation popup" style="z-index: 4;">
+        <ul class="hnList">
+          {{#if config.nav_items}}
+            {{#each config.nav_items}}
+              <li class="hnItem" href="#">
+                <a class="hnLink" href="{{this.href}}" target="{{fallback this.target "_blank"}}" aria-label="{{this.title}} navigation item">
+                  {{this.title}}
+                </a>
+              </li>
+            {{/each}}
+          {{/if}}
+          <li class="hnItem contactButton" href="#" aria-label="{{i18n "contact" "Contact"}}">
+            {{> contactLink}}
+          </li> <!-- Contact button -->
+          {{#if meta.languages}}
+            <!-- Language switcher -->
+            <li data-popup-trigger="language" class="hnItem languageSwitcher" href="#">
+              <a class="hnLink hnLang" href="#" aria-label="Switch language">
+                <span class="hnLangCode">{{meta.language_code}}</span>
+              </a>
+            </li>
+          {{/if}}
+        </ul>
+      </div>
+
+    </nav>
+  </header>
+
+  {{#page "categories"}}
+    <!-- Search bar -->
+    <section id="search-container">
+
+      <h1 class="scTitle" aria-label="{{i18n "custom_1" "👋 Hey! How can we help?"}}">{{i18n "custom_1" "👋 Hey! How can we help?"}}</h1>
+      <div class="scInstantSearch" id="instant-search">
+        <form action="{{rootPath meta.home_path}}/search" method="GET">
+          <label><input id="hd-query" name="query" aria-label="{{i18n "help_me_with" "Help Me With..."}}" placeholder="{{i18n "help_me_with" "Help Me With..."}}" autocomplete="off" autocorrect="off" autocapitalize="off"></label>
+        </form>
+      </div>
+
+      <!-- Search results -->
+      <section id="searchresults" aria-label="Search results">
+        <div class="srHits" id="hits" aria-label="Search hit"></div>
+      </section>
+
+      <!-- Can have either or, but not both topArticles & featuredArticles -->
+
+      <!-- Top articles -->
+      {{#if meta.top_articles}}
+        <section id="topArticles" aria-label="{{i18n "top_articles" "Top Articles"}}">
+          <h2 class="taTitle" aria-label="{{i18n "top_articles" "Top Articles"}} title">{{i18n "top_articles" "Top Articles"}}</h4>
+          <div class="taList">
+            {{#each meta.top_articles}}
+      				{{#unless (gt @index 2)}}
+                <a class="taHitLink" href="{{this.relative_url}}" aria-label="Go to article {{this.title}}">
+                  <div class="taHit scaleSmall">
+                    <h5 class="taCardTitle" aria-label="{{this.title}}">{{this.title}}</h4>
+                  </div>
+                </a>
+      				{{/unless}}
+      			{{/each}}
+          </div>
+        </section>
+      {{/if}}
+    </section>
+
+  {{/page}}
+</section>
+
+{{! takes c *models.Category and level int as partial parameters}}
+{{#*inline "sidebar_category"}}
+  <a
+    class="sidebar-category{{#page "category"}}{{#if (eq category.category_id c.category_id)}} current{{/if}}{{/page}}"
+    href="#category-{{c.category_id}}-items"
+    aria-expanded="false"
+    aria-controls="category-{{c.category_id}}-items"
+  >
+    <p
+      id="category-{{c.category_id}}-title"
+      style="margin-left: {{multiply 0.5 level}}em !important;"
+      {{#categoryIsAscendent @root.meta.sidebar_categories category c}}
+        class="expanded"
+      {{/categoryIsAscendent}}
+      onclick="toggleCategoryIcon(event, '{{c.category_id}}')"
+      aria-label="Category {{c.title}}"
+    >
+      {{c.title}}
+    </p>
+  </a>
+  <div
+    id="category-{{c.category_id}}-items"
+    class="collapse{{#categoryIsAscendent @root.meta.sidebar_categories category c}} in {{/categoryIsAscendent}}"
+    data-toggle="collapse"
+  >
+    {{#each (filterCategoriesByParentId @root.meta.sidebar_categories c.category_id)}}
+      {{> sidebar_category c=this level=(add level 1)}}
+    {{/each}}
+    {{#each c.articles}}
+      <a
+        class="sidebar-article{{#page "article"}}{{#if (eq article.article_id this.article_id)}} current{{/if}}{{/page}}"
+        href="{{this.relative_url}}"
+        onclick="window.location.href='{{this.relative_url}}'"
+        aria-label="Article {{this.title}}"
+      >
+        <p style="margin-left: {{multiply 0.5 (add level 1)}}em !important;">
+          {{this.title}}
+        </p>
+      </a>
+    {{/each}}
+  </div>
+{{/inline}}
+
+{{#*inline "sidebar"}}
+  <div id="sidebar">
+    {{#each meta.sidebar_categories}}
+      {{#unless this.parent_category_id}}
+        {{> sidebar_category c=this level=0}}
+      {{/unless}}
+    {{/each}}
+  </div>
+  <script>
+    function toggleCategoryIcon(event, category_id) {
+      var catTitleClass = document.getElementById(`category-${category_id}-title`);
+      var catItemsClass = document.getElementById(`category-${category_id}-items`);
+
+      if (catTitleClass && catItemsClass) {
+        if (catTitleClass.classList.contains('expanded')) {
+          catTitleClass.classList.remove('expanded');
+          catItemsClass.classList.remove('in');
+          event.preventDefault();
+        } else {
+          catTitleClass.classList.add('expanded');
+          catItemsClass.classList.add('in');
+          event.preventDefault();
+        }
+      }
+    }
+  </script>
+{{/inline}}
